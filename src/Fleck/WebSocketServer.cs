@@ -27,11 +27,18 @@ namespace Fleck
             _locationIP = ParseIPAddress(uri);
             _scheme = uri.Scheme;
             var socket = new Socket(_locationIP.AddressFamily, SocketType.Stream, ProtocolType.IP);
-            if(!MonoHelper.IsRunningOnMono()){
-                  #if __MonoCS__
-                  #else
-                    socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
-                  #endif
+            if (System.Environment.OSVersion.Version.Major < 6)
+            {
+
+            }
+            else
+            {
+                if(!MonoHelper.IsRunningOnMono()){
+                       #if __MonoCS__
+                       #else
+                         socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+                       #endif
+                 } 
             }
             ListenerSocket = new SocketWrapper(socket);
             SupportedSubProtocols = new string[0];
